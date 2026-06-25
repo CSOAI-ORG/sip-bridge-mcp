@@ -11,6 +11,22 @@ from typing import List, Dict, Any, Optional
 
 mcp = FastMCP("SIP Bridge", instructions="Bridge SIP / VoIP signalling to ONE OS — parse, map, govern telecom (STIR/SHAKEN, lawful intercept, privacy).")
 
+# ── SIGIL: every governed action → one signed hash-chained hop (SIGIL_LOG unifies all layers) ──
+import hashlib as _hl, time as _t, json as _j, os as _os
+_SIGIL_LOG = _os.environ.get("SIGIL_LOG", _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "bridge_sigil.log"))
+def _sigil(op, body):
+    try:
+        prev = ""
+        if _os.path.exists(_SIGIL_LOG):
+            with open(_SIGIL_LOG) as f:
+                ls = f.readlines()
+                if ls: prev = _j.loads(ls[-1]).get("digest", "")
+        ts = int(_t.time()); dg = _hl.sha256(f"{op}|{ts}|{prev[:8]}|{body}".encode()).hexdigest()[:16]
+        _os.makedirs(_os.path.dirname(_SIGIL_LOG), exist_ok=True)
+        with open(_SIGIL_LOG, "a") as f: f.write(_j.dumps({"ts": ts, "op": op, "body": body, "prev_digest": prev, "digest": dg}) + "\n")
+        return dg
+    except Exception: return ""
+
 METHODS = {"INVITE": "Call setup", "ACK": "Ack", "BYE": "Call teardown", "CANCEL": "Cancel",
            "REGISTER": "Registration", "OPTIONS": "Capabilities", "REFER": "Transfer", "MESSAGE": "IM"}
 
@@ -73,6 +89,7 @@ def map_to_modern(message: str) -> Dict[str, Any]:
 @mcp.tool()
 def govern_telecom(message: str) -> Governance:
     """Governance: telecom surface — caller-ID attestation, privacy, lawful-intercept (attestable)."""
+    _sigil("G", "sip|govern_telecom")
     p = parse_sip(message)
     flags = []
     if p.method == "INVITE" and not p.has_identity:
