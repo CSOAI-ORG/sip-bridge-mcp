@@ -1,0 +1,8 @@
+# sip-bridge-mcp
+# CSOAI Layer-0 legacy-bridge. Bridge SIP / VoIP signalling to ONE OS — parse, map, govern telecom (STIR/SHAKEN / privacy / lawful intercept).
+
+## Install
+```bash
+pip install -e .
+python server.py
+```
