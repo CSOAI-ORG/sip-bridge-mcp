@@ -1,7 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "io.github.CSOAI-ORG/sip-bridge-mcp",
-  "description": "Bridge SIP / VoIP signalling to ONE OS — parse, map, govern telecom (STIR/SHAKEN / privacy / lawful intercept).",
+  "description": "Bridge SIP / VoIP signalling to ONE OS \u2014 parse, map, govern telecom (STIR/SHAKEN / privacy / lawful intercept).",
   "version": "0.1.0",
-  "packages": [{"registry_type": "pypi", "identifier": "sip-bridge-mcp", "version": "0.1.0", "transport": {"type": "stdio"}}]
+  "packages": [
+    {
+      "identifier": "sip-bridge-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "registryType": "pypi",
+      "runtimeHint": "python"
+    }
+  ]
 }
